@@ -201,6 +201,16 @@ void Odometry::update_joint_state(
   const std::shared_ptr<sensor_msgs::msg::JointState const> & joint_state)
 {
   static std::array<double, 2> last_joint_positions = {0.0f, 0.0f};
+  static bool first_joint_state = true;
+
+  // The OpenCR's wheel positions count from its own power-on, and it stays
+  // on (battery) between bringups: take the first reading as the starting
+  // point, otherwise /odom jumps tens of metres at every bringup.
+  if (first_joint_state) {
+    last_joint_positions[0] = joint_state->position[0];
+    last_joint_positions[1] = joint_state->position[1];
+    first_joint_state = false;
+  }
 
   diff_joint_positions_[0] = joint_state->position[0] - last_joint_positions[0];
   diff_joint_positions_[1] = joint_state->position[1] - last_joint_positions[1];
