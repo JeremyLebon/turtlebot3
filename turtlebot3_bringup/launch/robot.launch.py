@@ -93,5 +93,11 @@ def generate_launch_description():
             # Robot krijgt de uitgang van twist_mux (joystick > web > /cmd_vel),
             # zie turtlebot_docker/docker/twist_mux.yaml
             remappings=[('cmd_vel', 'cmd_vel_out')],
+            # Herstart vanzelf: de node crasht als de OpenCR niet meer antwoordt,
+            # bv. als die de motorvoeding uitschakelt bij een lege batterij
+            # (< 11,0 V). Zo komt de robot terug na opladen/wisselen zonder
+            # bringup opnieuw te starten.
+            respawn=True,
+            respawn_delay=5.0,
             output='screen'),
     ])
