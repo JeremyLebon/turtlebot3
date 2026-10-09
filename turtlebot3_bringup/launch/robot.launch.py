@@ -90,5 +90,8 @@ def generate_launch_description():
             executable='turtlebot3_ros',
             parameters=[tb3_param_dir],
             arguments=['-i', usb_port],
+            # Robot krijgt de uitgang van twist_mux (joystick > web > /cmd_vel),
+            # zie turtlebot_docker/docker/twist_mux.yaml
+            remappings=[('cmd_vel', 'cmd_vel_out')],
             output='screen'),
     ])
